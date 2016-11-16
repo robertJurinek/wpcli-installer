@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION='0.0.2'
+VERSION='0.1.0'
 YES='y'
 NO='n'
 LOCALE="en_US"
@@ -7,10 +7,26 @@ DB_HOST='localhost'
 USER='www-data'
 GROUP='www-data'
 
+# Welcome message and dexcription
 printf "WordPress autoinstaller for WP-CLI v $VERSION.\n"
 
-#Optional Mysql DB and user creation
-printf "MySQL DB and user creation. You will need mysql root password for this. Skip to the next step?[y/n] "
+
+# Check for WP-CLI and if not present, install it.
+which wp >/dev/null 
+if [ $? -ne 0 ]; then
+	printf "Script requires wp-cli to work. Install now?[y/n]: "
+	read WPCLI_INSTALL
+	if [ "$WPCLI_INSTALL" != "y" ]; then
+		exit 1
+	fi
+	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+	chmod +x wp-cli.phar
+	sudo mv wp-cli.phar /usr/local/bin/wp
+fi
+
+
+#Optional MySQL database and user creation
+printf "MySQL database and user creation. You will need mysql root password for this. Skip to the next step?[y/n] "
 
 read SKIP_DB
 
