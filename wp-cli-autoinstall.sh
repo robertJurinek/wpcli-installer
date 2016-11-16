@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION='0.0.1'
+VERSION='0.0.2'
 YES='y'
 NO='n'
 LOCALE="en_US"
@@ -68,14 +68,14 @@ read WP_PREFIX
 
 INSTALL_PATH="/var/www/html/$WP_URL"
 printf "Provide sudo password for install directory creation\n"
-sudo mkdir $INSTALL_PATH
-sudo chown $USER:$GROUP $INSTALL_PATH
-sudo chmod 775 $INSTALL_PATH
+sudo mkdir "$INSTALL_PATH"
+sudo chown "$USER:$GROUP" "$INSTALL_PATH"
+sudo chmod 775 "$INSTALL_PATH"
 
 # Install WordPress and create the wp-config.php file...
-wp core download --path=$INSTALL_PATH --locale=$LOCALE 
-wp core config --path=$INSTALL_PATH --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --dbhost=$DB_HOST --dbprefix=WP_PREFIX"_" 
-wp core install --path=$INSTALL_PATH --title='$WP_TITLE' --url="http://"$WP_URL --admin_user=$WP_ADMIN --admin_email=$WP_EMAIL --admin_password=$WP_PASS 
+wp core download --path="$INSTALL_PATH" --locale="$LOCALE" 
+wp core config --path="$INSTALL_PATH" --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --dbprefix="$WP_PREFIX" 
+wp core install --path="$INSTALL_PATH" --title="$WP_TITLE" --url="http://$WP_URL" --admin_user="$WP_ADMIN" --admin_email="$WP_EMAIL" --admin_password="$WP_PASS" 
 
 cd $INSTALL_PATH
 
@@ -96,7 +96,7 @@ if [ "$SKIP_PLUGINS" != "$YES" ];
 	
 fi	
 
-sudo chown -R $USER:$GROUP $INSTALL_PATH
+sudo chown -R "$USER:$GROUP" "$INSTALL_PATH"
 
 printf "NGINX configuration. Skip to next step?[y/n]: "
 read SKIP NGINX
@@ -117,9 +117,9 @@ if [ "$SKIP_NGINX" != "$YES" ];
 	}"
 	
 	# Write conf file
-	printf "$NGNIX_CONFIG" | sudo tee /etc/nginx/sites-available/$WP_URL > /dev/null
+	printf "$NGNIX_CONFIG" | sudo tee "/etc/nginx/sites-available/$WP_URL" > /dev/null
 	# Create link in sites-enabled
-	sudo ln -s /etc/nginx/sites-available/$WP_URL /etc/nginx/sites-enabled/$WP_URL
+	sudo ln -s "/etc/nginx/sites-available/$WP_URL" "/etc/nginx/sites-enabled/$WP_URL"
 	# Test settings and reload
 	sudo nginx -t && sudo nginx -s reload
 
